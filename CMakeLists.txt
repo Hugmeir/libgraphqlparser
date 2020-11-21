@@ -78,8 +78,8 @@ SET(graphqlparser_libsrc
 
 ADD_LIBRARY(graphqlparser_obj OBJECT ${graphqlparser_libsrc})
 
-add_library(graphqlparser_shared SHARED $<TARGET_OBJECTS:graphqlparser_obj>)
-add_library(graphqlparser_static STATIC $<TARGET_OBJECTS:graphqlparser_obj>)
+ADD_LIBRARY(graphqlparser_shared SHARED $<TARGET_OBJECTS:graphqlparser_obj>)
+ADD_LIBRARY(graphqlparser_static STATIC $<TARGET_OBJECTS:graphqlparser_obj>)
 
 SET_TARGET_PROPERTIES(graphqlparser_shared PROPERTIES OUTPUT_NAME graphqlparser CLEAN_DIRECT_OUTPUT 1)
 SET_TARGET_PROPERTIES(graphqlparser_static PROPERTIES OUTPUT_NAME graphqlparser CLEAN_DIRECT_OUTPUT 1)
@@ -142,7 +142,8 @@ INSTALL(FILES
 INSTALL(TARGETS
     graphqlparser_shared
     graphqlparser_static
-  LIBRARY DESTINATION lib)
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib)
 
 if (UNIX)
   # generate pkgconfig file
