@@ -76,10 +76,13 @@ SET(graphqlparser_libsrc
   GraphQLParser.cpp)
 
 
-ADD_LIBRARY(graphqlparser_obj OBJECT ${graphqlparser_libsrc})
-
+ADD_LIBRARY(graphqlparser_obj    OBJECT ${graphqlparser_libsrc})
 ADD_LIBRARY(graphqlparser_shared SHARED $<TARGET_OBJECTS:graphqlparser_obj>)
 ADD_LIBRARY(graphqlparser_static STATIC $<TARGET_OBJECTS:graphqlparser_obj>)
+
+# add -fPIC, but only for the .so:
+SET_PROPERTY(TARGET graphqlparser_obj    PROPERTY POSITION_INDEPENDENT_CODE ON)
+SET_PROPERTY(TARGET graphqlparser_shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 SET_TARGET_PROPERTIES(graphqlparser_shared PROPERTIES OUTPUT_NAME graphqlparser CLEAN_DIRECT_OUTPUT 1)
 SET_TARGET_PROPERTIES(graphqlparser_static PROPERTIES OUTPUT_NAME graphqlparser CLEAN_DIRECT_OUTPUT 1)
