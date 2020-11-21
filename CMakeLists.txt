@@ -56,7 +56,7 @@ FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/c)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-ADD_LIBRARY(graphqlparser SHARED
+SET(graphqlparser_libsrc
   JsonVisitor.cpp
   ${CMAKE_CURRENT_BINARY_DIR}/Ast.h
   ${CMAKE_CURRENT_BINARY_DIR}/Ast.cpp
@@ -75,13 +75,22 @@ ADD_LIBRARY(graphqlparser SHARED
   c/GraphQLParser.cpp
   GraphQLParser.cpp)
 
+
+ADD_LIBRARY(graphqlparser_obj OBJECT ${graphqlparser_libsrc})
+
+add_library(graphqlparser_shared SHARED $<TARGET_OBJECTS:graphqlparser_obj>)
+add_library(graphqlparser_static STATIC $<TARGET_OBJECTS:graphqlparser_obj>)
+
+SET_TARGET_PROPERTIES(graphqlparser_shared PROPERTIES OUTPUT_NAME graphqlparser CLEAN_DIRECT_OUTPUT 1)
+SET_TARGET_PROPERTIES(graphqlparser_static PROPERTIES OUTPUT_NAME graphqlparser CLEAN_DIRECT_OUTPUT 1)
+
 # Enable this and remove CMAKE_CXX_FLAGS fiddle above when we are able
 # to upgrade to CMake 2.8.12. Blocker seems to be Travis CI being on
 # Ubuntu Precise; Trusty has 2.8.12.
-# TARGET_COMPILE_OPTIONS(graphqlparser PUBLIC -std=gnu++11)
+# TARGET_COMPILE_OPTIONS(graphqlparser_shared PUBLIC -std=gnu++11)
 
 ADD_EXECUTABLE(dump_json_ast dump_json_ast.cpp)
-TARGET_LINK_LIBRARIES(dump_json_ast graphqlparser)
+TARGET_LINK_LIBRARIES(dump_json_ast graphqlparser_shared)
 
 FUNCTION(GENERATE_AST_FILE FILE_TYPE FILE_RELATIVE_PATH)
   ADD_CUSTOM_COMMAND(
@@ -130,7 +139,9 @@ INSTALL(FILES
   JsonVisitor.h
   ${BISON_LOCATION_HEADER}
   DESTINATION include/graphqlparser)
-INSTALL(TARGETS graphqlparser
+INSTALL(TARGETS
+    graphqlparser_shared
+    graphqlparser_static
   LIBRARY DESTINATION lib)
 
 if (UNIX)

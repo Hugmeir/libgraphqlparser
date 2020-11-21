@@ -7,5 +7,5 @@ Name: @CMAKE_PROJECT_NAME@
 Description: facebook graphql parsing library
 Version: @LIBGRAPHQLPARSER_VERSION@
 Libs: -L${libdir} -lgraphqlparser
-Libs.private:
+Libs.private: -L${libdir}/libgraphqlparser@CMAKE_STATIC_LIBRARY_SUFFIX@
 Cflags: -I${includedir}
